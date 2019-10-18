@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 
+"""Validate SC1."""
+
 import argparse
 import json
+
 import dendropy
 
 
@@ -10,11 +13,11 @@ def check_header(header):
 
     error = ""
     try:
-        dream_id, nw = header.rstrip("\r\n").replace("\"", "").split("\t")
+        dream_id, nwk = header.rstrip("\r\n").replace("\"", "").split("\t")
     except ValueError:
-        error = "Two tab-delimited columns are expected: 'dreamID', 'nw'"
+        error = "Two tab-delimited columns are expected"
     else:
-        if dream_id != "dreamID" or nw not in ["ground", "nw"]:
+        if dream_id != "dreamID" or nwk != "nw":
             error = "Column headers should be: 'dreamID', 'nw'"
     return error
 
@@ -26,10 +29,8 @@ def check_id(dream_id):
     try:
         dream_id = int(dream_id)
         assert 1 <= dream_id <= 30
-    except ValueError:
-        error = "dreamID should be an integer"
-    except AssertionError:
-        error = f"Unknown dreamID found: {dream_id}"
+    except (ValueError, AssertionError):
+        error = "dreamID(s) should be a number from 1 to 30"
     return error, dream_id
 
 
@@ -39,23 +40,25 @@ def check_tree(tree):
     error = ""
     try:
         tree = dendropy.Tree.get(
-            data=tree,
+            data=tree.strip("\""),
             schema="newick")
 
     except Exception:
-        error = "A prediction tree is not a valid Newick tree format"
+        error = "Prediction tree(s) not a valid Newick tree format"
 
     return error, tree
 
 
 def get_gs_trees(gs_file):
-    def get_pair(line):
-        key, sep, value = line.strip().partition("\t")
+    """Map dreamID to goldstandard tree."""
+
+    def get_key_val(line):
+        key, _, value = line.strip().partition("\t")
         return int(key), value.strip("\"")
 
-    with open(gs_file) as gs:
-        gs.readline()  # ignore header
-        return dict(get_pair(line) for line in gs)
+    with open(gs_file) as gold:
+        gold.readline()  # ignore header
+        return dict(get_key_val(line) for line in gold)
 
 
 def main(submission, entity_type, goldstandard, results):
@@ -87,29 +90,33 @@ def main(submission, entity_type, goldstandard, results):
                 for row in pred:
 
                     columns = row.rstrip("\r\n").split("\t")
-                    id_error, tree_id = check_id(columns[0])
-                    tree_error, pred_tree = check_tree(columns[1])
 
-                    if id_error or tree_error:
-                        invalid_reasons.add(id_error)
-                        invalid_reasons.add(tree_error)
+                    if len(columns) > 1:
+                        id_error, tree_id = check_id(columns[0])
+                        tree_error, pred_tree = check_tree(columns[1])
+
+                        if id_error or tree_error:
+                            invalid_reasons.add(id_error)
+                            invalid_reasons.add(tree_error)
+                        else:
+
+                            # Validation 6: tree uses barcode as label names.
+                            try:
+                                gs_tree = dendropy.Tree.get(
+                                    data=gs_data[tree_id], schema="newick")
+                                valid_names = [
+                                    t.label for t in gs_tree.taxon_namespace]
+                                taxons = all(
+                                    [t.label in valid_names
+                                     for t in pred_tree.taxon_namespace])
+                                assert taxons
+
+                            except AssertionError:
+                                invalid_reasons.add(
+                                    "Leaf names should be barcodes, e.g. 1_2012210001")
                     else:
-
-                        # Validation 6: tree uses barcode as label names.
-                        try:
-                            gs_tree = dendropy.Tree.get(
-                                data=gs_data[tree_id], schema="newick")
-                            valid_names = [
-                                t.label for t in gs_tree.taxon_namespace]
-                            taxons = all(
-                                [t.label in valid_names
-                                    for t in pred_tree.taxon_namespace])
-                            assert taxons
-
-                        except AssertionError:
-                            invalid_reasons.add(
-                                "Unknown leaf labels found; only use barcodes"
-                                + " as label names, e.g. 1_2012210001")
+                        invalid_reasons.add(
+                            "Two tab-delimited columns are expected")
 
     prediction_file_status = "INVALID" if invalid_reasons else "VALID"
 
