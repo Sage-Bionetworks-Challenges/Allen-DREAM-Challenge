@@ -46,9 +46,9 @@ def main(submission, entity_type, goldstandard, size, results):
             pred_tree = dendropy.Tree.get(file=open(submission, 'r'),
                                           schema="newick",
                                           tree_offset=0)
-        except Exception:
+        except Exception as err:
             invalid_reasons = [
-                "Prediction tree not a valid Newick tree format"]
+                f"Prediction tree not a valid Newick tree format: {err}"]
         else:
             if not valid_tree_size(pred_tree, size):
                 invalid_reasons.append(
@@ -60,7 +60,7 @@ def main(submission, entity_type, goldstandard, size, results):
 
     prediction_file_status = "INVALID" if invalid_reasons else "VALID"
 
-    result_dict = {'prediction_file_errors': "\n".join(invalid_reasons),
+    result_dict = {'prediction_file_errors': "\n".join(invalid_reasons)[:500],
                    'prediction_file_status': prediction_file_status,
                    'round': 1}
 
