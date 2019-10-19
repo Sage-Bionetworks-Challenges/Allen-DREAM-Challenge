@@ -43,8 +43,8 @@ def check_tree(tree):
             data=tree.strip("\""),
             schema="newick")
 
-    except Exception:
-        error = "Prediction tree(s) not a valid Newick tree format"
+    except Exception as err:
+        error = f"Prediction tree(s) not a valid Newick tree format: {err}"
 
     return error, tree
 
@@ -114,7 +114,7 @@ def main(submission, entity_type, goldstandard, results):
 
     prediction_file_status = "INVALID" if invalid_reasons else "VALID"
 
-    result_dict = {'prediction_file_errors': "\n".join(invalid_reasons),
+    result_dict = {'prediction_file_errors': "\n".join(invalid_reasons)[:500],
                    'prediction_file_status': prediction_file_status,
                    'round': 1}
 

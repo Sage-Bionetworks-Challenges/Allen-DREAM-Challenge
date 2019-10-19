@@ -1,10 +1,10 @@
 #!/usr/bin/env cwl-runner
 #
-# Validate SC2
+# Validate SC2 & SC3
 #
 cwlVersion: v1.0
 class: CommandLineTool
-baseCommand: validate_sc2.py
+baseCommand: validate.py
 
 hints:
   DockerRequirement:
@@ -13,14 +13,22 @@ hints:
 inputs:
   - id: inputfile
     type: File
+  - id: goldstandard
+    type: File
   - id: entity_type
     type: string
+  - id: size
+    type: int
 
 arguments:
   - valueFrom: $(inputs.inputfile)
     prefix: -s
+  - valueFrom: $(inputs.goldstandard.path)
+    prefix: -g
   - valueFrom: $(inputs.entity_type)
     prefix: -e
+  - valueFrom: $(inputs.size)
+    prefix: -n
   - valueFrom: results.json
     prefix: -r
 
