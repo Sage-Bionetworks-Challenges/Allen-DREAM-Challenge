@@ -73,14 +73,11 @@ def main(submission, entity_type, goldstandard, results):
 
     invalid_reasons = set()
 
-    # Validation 1: submission is a file, not a Synapse project.
     if submission is None:
         invalid_reasons = {
             f"Expected FileEntity type but found {entity_type}"}
     else:
         with open(submission) as pred:
-
-            # Validation 2: only two columns: dreamID, nw
             error = check_header(pred.readline())
             if error:
                 invalid_reasons.add(error)
@@ -99,8 +96,6 @@ def main(submission, entity_type, goldstandard, results):
                             invalid_reasons.add(id_error)
                             invalid_reasons.add(tree_error)
                         else:
-
-                            # Validation 6: tree uses barcode as label names.
                             try:
                                 gs_tree = dendropy.Tree.get(
                                     data=gs_data[tree_id], schema="newick")
@@ -110,7 +105,6 @@ def main(submission, entity_type, goldstandard, results):
                                     [t.label in valid_names
                                      for t in pred_tree.taxon_namespace])
                                 assert taxons
-
                             except AssertionError:
                                 invalid_reasons.add(
                                     "Leaf names should be barcodes, e.g. 1_2012210001")
@@ -120,12 +114,12 @@ def main(submission, entity_type, goldstandard, results):
 
     prediction_file_status = "INVALID" if invalid_reasons else "VALID"
 
-    result = {'prediction_file_errors': "\n".join(invalid_reasons),
-              'prediction_file_status': prediction_file_status,
-              'round': 1}
+    result_dict = {'prediction_file_errors': "\n".join(invalid_reasons),
+                   'prediction_file_status': prediction_file_status,
+                   'round': 1}
 
     with open(results, 'w') as out:
-        out.write(json.dumps(result))
+        out.write(json.dumps(result_dict))
 
 
 if __name__ == "__main__":
