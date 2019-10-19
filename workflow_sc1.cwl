@@ -49,7 +49,7 @@ steps:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/synapse-client-cwl-tools/v0.1/synapse-get-tool.cwl
     in:
       - id: synapseid
-        valueFrom: "syn20692756"
+        valueFrom: "syn20975057"
       - id: synapse_config
         source: "#synapseConfig"
     out:
@@ -60,6 +60,8 @@ steps:
     in:
       - id: inputfile
         source: "#download_submission/filepath"
+      - id: goldstandard
+        source: "#download_goldstandard/filepath"
       - id: entity_type
         source: "#download_submission/entity_type"
     out:
@@ -68,7 +70,7 @@ steps:
       - id: invalid_reasons
   
   validation_email:
-    run: run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v2.0/validate_email.cwl
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v2.0/validate_email.cwl
     in:
       - id: submissionid
         source: "#submissionId"
@@ -89,9 +91,9 @@ steps:
       - id: annotation_values
         source: "#validation/results"
       - id: to_public
-        valueFrom: "true"
+        default: true
       - id: force_change_annotation_acl
-        valueFrom: "true"
+        default: true
       - id: synapse_config
         source: "#synapseConfig"
     out: [finished]
@@ -138,9 +140,9 @@ steps:
       - id: annotation_values
         source: "#scoring/results"
       - id: to_public
-        valueFrom: "true"
+        default: true
       - id: force_change_annotation_acl
-        valueFrom: "true"
+        default: true
       - id: synapse_config
         source: "#synapseConfig"
       - id: previous_annotation_finished
