@@ -8,7 +8,7 @@ baseCommand: score.py
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn20692756/treecmp
+    dockerPull: docker.synapse.org/syn20692756/scoring_harness
 
 inputs:
   - id: inputfile
