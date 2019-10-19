@@ -1,6 +1,6 @@
 #!/usr/bin/env cwl-runner
 #
-# Validate SC2
+# Validate SC2 & SC3
 #
 cwlVersion: v1.0
 class: CommandLineTool
@@ -8,8 +8,7 @@ baseCommand: validate.py
 
 hints:
   DockerRequirement:
-    dockerPull: test
-    #dockerPull: docker.synapse.org/syn20692756/scoring_harness
+    dockerPull: docker.synapse.org/syn20692756/scoring_harness
 
 inputs:
   - id: inputfile
