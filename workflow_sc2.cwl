@@ -50,7 +50,7 @@ steps:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/synapse-client-cwl-tools/v0.1/synapse-get-tool.cwl
     in:
       - id: synapseid
-        valueFrom: "syn20692756"
+        valueFrom: "syn20980691"
       - id: synapse_config
         source: "#synapseConfig"
     out:
@@ -69,7 +69,7 @@ steps:
       - id: invalid_reasons
   
   validation_email:
-    run: run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v2.0/validate_email.cwl
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v2.0/validate_email.cwl
     in:
       - id: submissionid
         source: "#submissionId"
@@ -79,7 +79,6 @@ steps:
         source: "#validation/status"
       - id: invalid_reasons
         source: "#validation/invalid_reasons"
-
     out: [finished]
 
   annotate_validation_with_output:
