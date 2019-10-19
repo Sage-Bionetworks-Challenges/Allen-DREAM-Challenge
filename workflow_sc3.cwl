@@ -49,7 +49,7 @@ steps:
     run: https://raw.githubusercontent.com/Sage-Bionetworks/synapse-client-cwl-tools/v0.1/synapse-get-tool.cwl
     in:
       - id: synapseid
-        valueFrom: "syn20692756"
+        valueFrom: "syn20692756" # FIXME
       - id: synapse_config
         source: "#synapseConfig"
     out:
@@ -60,8 +60,12 @@ steps:
     in:
       - id: inputfile
         source: "#download_submission/filepath"
+      - id: goldstandard
+        source: "#download_goldstandard/filepath"
       - id: entity_type
         source: "#download_submission/entity_type"
+      - id: size
+        valueFrom: 10000
     out:
       - id: results
       - id: status

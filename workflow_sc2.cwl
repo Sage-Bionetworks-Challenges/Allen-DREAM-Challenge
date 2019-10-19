@@ -61,8 +61,12 @@ steps:
     in:
       - id: inputfile
         source: "#download_submission/filepath"
+      - id: goldstandard
+        source: "#download_goldstandard/filepath"
       - id: entity_type
         source: "#download_submission/entity_type"
+      - id: size
+        valueFrom: 1000
     out:
       - id: results
       - id: status

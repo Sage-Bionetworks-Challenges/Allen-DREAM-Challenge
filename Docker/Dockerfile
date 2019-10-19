@@ -18,4 +18,4 @@ RUN pip3 install pandas dendropy
 COPY score.py /usr/local/bin/score.py
 COPY score_sc1.py /usr/local/bin/score_sc1.py
 COPY validate_sc1.py /usr/local/bin/validate_sc1.py
-COPY validate_sc2.py /usr/local/bin/validate_sc2.py
+COPY validate.py /usr/local/bin/validate.py
