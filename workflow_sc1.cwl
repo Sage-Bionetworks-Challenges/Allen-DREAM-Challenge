@@ -91,9 +91,9 @@ steps:
       - id: annotation_values
         source: "#validation/results"
       - id: to_public
-        valueFrom: "true"
+        default: true
       - id: force_change_annotation_acl
-        valueFrom: "true"
+        default: true
       - id: synapse_config
         source: "#synapseConfig"
     out: [finished]
@@ -140,9 +140,9 @@ steps:
       - id: annotation_values
         source: "#scoring/results"
       - id: to_public
-        valueFrom: "true"
+        default: true
       - id: force_change_annotation_acl
-        valueFrom: "true"
+        default: true
       - id: synapse_config
         source: "#synapseConfig"
       - id: previous_annotation_finished
