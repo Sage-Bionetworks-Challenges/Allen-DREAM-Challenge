@@ -65,7 +65,7 @@ steps:
       - id: entity_type
         source: "#download_submission/entity_type"
       - id: size
-        valueFrom: 10000
+        default: 10000
     out:
       - id: results
       - id: status
