@@ -93,9 +93,9 @@ steps:
       - id: annotation_values
         source: "#validation/results"
       - id: to_public
-        valueFrom: "true"
+        default: true
       - id: force_change_annotation_acl
-        valueFrom: "true"
+        default: true
       - id: synapse_config
         source: "#synapseConfig"
     out: [finished]
@@ -119,7 +119,7 @@ steps:
       - id: goldstandard
         source: "#download_goldstandard/filepath"
       - id: runnum
-        valueFrom: 1
+        default: 1
       - id: check_validation_finished 
         source: "#check_status/finished"
     out:
@@ -144,9 +144,9 @@ steps:
       - id: annotation_values
         source: "#scoring/results"
       - id: to_public
-        valueFrom: "true"
+        default: true
       - id: force_change_annotation_acl
-        valueFrom: "true"
+        default: true
       - id: synapse_config
         source: "#synapseConfig"
       - id: previous_annotation_finished
