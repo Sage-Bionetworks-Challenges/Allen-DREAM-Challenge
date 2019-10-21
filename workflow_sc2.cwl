@@ -57,7 +57,7 @@ steps:
       - id: filepath
 
   validation:
-    run: validate_sc2.cwl
+    run: validate.cwl
     in:
       - id: inputfile
         source: "#download_submission/filepath"
