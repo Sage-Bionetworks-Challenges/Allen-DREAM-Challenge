@@ -112,7 +112,7 @@ steps:
     out: [finished]
 
   scoring:
-    run: score_treecmp.cwl
+    run: score_sc3.cwl
     in:
       - id: inputfile
         source: "#download_submission/filepath"
