@@ -58,7 +58,7 @@ def main(submission, entity_type, goldstandard, size, results):
                 invalid_reasons.append(
                     "Leaf names should be cell identifiers.")
 
-    prediction_file_status = "INVALID" if invalid_reasons else "VALID"
+    prediction_file_status = "INVALID" if invalid_reasons else "VALIDATED"
 
     result_dict = {'prediction_file_errors': "\n".join(invalid_reasons)[:500],
                    'prediction_file_status': prediction_file_status,
