@@ -112,7 +112,7 @@ def main(submission, entity_type, goldstandard, results):
                         invalid_reasons.add(
                             "Two tab-delimited columns are expected")
 
-    prediction_file_status = "INVALID" if invalid_reasons else "VALID"
+    prediction_file_status = "INVALID" if invalid_reasons else "VALIDATED"
 
     result_dict = {'prediction_file_errors': "\n".join(invalid_reasons)[:500],
                    'prediction_file_status': prediction_file_status,
