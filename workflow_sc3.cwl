@@ -118,8 +118,6 @@ steps:
         source: "#download_submission/filepath"
       - id: goldstandard
         source: "#download_goldstandard/filepath"
-      - id: runnum
-        valueFrom: 10
       - id: check_validation_finished 
         source: "#check_status/finished"
     out:
