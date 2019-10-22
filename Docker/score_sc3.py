@@ -3,7 +3,7 @@
 import argparse
 import json
 
-import pandas as pd
+import scipy.special
 
 import score
 
@@ -19,30 +19,22 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
     """
     score_dict = {}
     prediction_file_status = "SCORED"
-    submissiondf = pd.read_csv(submissionfile, sep="\t")
-    goldstandarddf = pd.read_csv(goldstandard, sep="\t")
-    # Match dreamID
-    mergeddf = submissiondf.merge(goldstandarddf, on="dreamID")
 
-    rf_scores = []
-    triple_scores = []
-    for _, row in mergeddf.iterrows():
-        with open("truth.nwk", 'w') as truth:
-            truth.write(row['ground'])
-        with open("sub.nwk", 'w') as sub:
-            sub.write(row['nw'])
+    scores = score.get_scores(goldstandard, submissionfile,
+                              "treecmp_results.out",
+                              path_to_treecmp)
 
-        scores = score.get_scores("truth.nwk", "sub.nwk",
-                                  "treecmp_results.out", path_to_treecmp)
+    n = scores.T[0].loc['Common_taxa']
+    rf = scores.T[0].loc['R-F_Cluster']
+    triples = scores.T[0].loc['Triples']
+    triples_score = 3*triples/(2*scipy.special.comb(n, 3, repetition=False))
+    rf_score = rf/n
 
-        rf_scores.append(scores.T[0].loc['R-F_Cluster_toYuleAvg'])
-        triple_scores.append(scores.T[0].loc['Triples_toYuleAvg'])
-
-    score_dict['RF_average'] = sum(rf_scores) / len(rf_scores)
-    score_dict['Triples_average'] = sum(triple_scores) / len(triple_scores)
+    score_dict['RF'] = rf_score
+    score_dict['Triples'] = triples_score
     score_dict['prediction_file_status'] = prediction_file_status
-    with open(results, 'w') as o:
-        o.write(json.dumps(score_dict))
+    with open(results, 'w') as output:
+        output.write(json.dumps(score_dict))
 
 
 if __name__ == "__main__":

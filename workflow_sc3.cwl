@@ -112,14 +112,12 @@ steps:
     out: [finished]
 
   scoring:
-    run: score_treecmp.cwl
+    run: score_sc3.cwl
     in:
       - id: inputfile
         source: "#download_submission/filepath"
       - id: goldstandard
         source: "#download_goldstandard/filepath"
-      - id: runnum
-        valueFrom: 10
       - id: check_validation_finished 
         source: "#check_status/finished"
     out:
