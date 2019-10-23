@@ -8,7 +8,7 @@ baseCommand: score_sc3.py
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn20692756/scoring_harness:v1
+    dockerPull: docker.synapse.org/syn20692756/scoring_harness:v2
 
 inputs:
   - id: inputfile
