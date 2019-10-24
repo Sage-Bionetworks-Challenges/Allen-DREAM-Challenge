@@ -31,8 +31,8 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
             truth.write(row['ground'])
         with open("sub.nwk", 'w') as sub:
             sub.write(row['nw'])
-
-        scores = score.get_scores("truth.nwk", "sub.nwk",
+        rooted_submission_path = score.reroot_submission("sub.nwk")
+        scores = score.get_scores("truth.nwk", rooted_submission_path,
                                   "treecmp_results.out", path_to_treecmp)
 
         rf_scores.append(scores.T[0].loc['R-F_Cluster_toYuleAvg'])

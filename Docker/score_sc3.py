@@ -19,8 +19,8 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
     """
     score_dict = {}
     prediction_file_status = "SCORED"
-
-    scores = score.get_scores(goldstandard, submissionfile,
+    rooted_submission_path = score.reroot_submission(submissionfile)
+    scores = score.get_scores(goldstandard, rooted_submission_path,
                               "treecmp_results.out",
                               path_to_treecmp)
 

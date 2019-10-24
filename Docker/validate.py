@@ -67,9 +67,6 @@ def main(submission, entity_type, goldstandard, results):
             pred_tree = dendropy.Tree.get(file=open(submission, 'r'),
                                           schema="newick",
                                           tree_offset=0)
-
-            # pred_tree.reroot_at_node(find_root, update_bipartitions=False)
-            # pred_tree.write(file=open('treefile.tre', 'r'), schema="newick")
         except Exception as err:
             invalid_reasons = [
                 f"Prediction tree not a valid Newick tree format: {err}"]

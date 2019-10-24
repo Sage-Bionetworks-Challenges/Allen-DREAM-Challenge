@@ -5,6 +5,7 @@ import json
 import os
 import subprocess
 
+import dendropy
 import pandas as pd
 
 
@@ -53,6 +54,21 @@ def get_scores(path_truth_newick, path_submission_newick, path_score_output,
     return df_metrics
 
 
+def reroot_submission(submissionfile):
+    """If 'root' node is in the middle, must reroot the tree"""
+    pred_tree = dendropy.Tree.get(file=open(submissionfile, 'r'),
+                                  schema="newick",
+                                  tree_offset=0)
+    root_taxon = pred_tree.find_node_with_taxon_label('root')
+    if root_taxon:
+        pred_tree.reroot_at_node(root_taxon, update_bipartitions=False)
+        output = submissionfile + ".new"
+        with open(output, "w") as rerooted_tree:
+            pred_tree.write(file=rerooted_tree, schema="newick")
+        return output
+    return pred_tree
+
+
 def main(submissionfile, goldstandard, results, path_to_treecmp, run_num=1):
     """Get scores and write results to json
 
@@ -66,8 +82,9 @@ def main(submissionfile, goldstandard, results, path_to_treecmp, run_num=1):
     prediction_file_status = "SCORED"
     rf_scores = []
     triple_scores = []
+    rooted_submission_path = reroot_submission(submissionfile)
     for _ in range(run_num):
-        scores = get_scores(goldstandard, submissionfile,
+        scores = get_scores(goldstandard, rooted_submission_path,
                             "treecmp_results.out",
                             path_to_treecmp)
         rf_scores.append(scores.T[0].loc['R-F_Cluster_toYuleAvg'])
