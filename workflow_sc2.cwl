@@ -65,8 +65,6 @@ steps:
         source: "#download_goldstandard/filepath"
       - id: entity_type
         source: "#download_submission/entity_type"
-      - id: size
-        default: 1000
     out:
       - id: results
       - id: status

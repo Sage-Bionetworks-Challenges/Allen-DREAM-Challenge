@@ -17,8 +17,6 @@ inputs:
     type: File
   - id: entity_type
     type: string
-  - id: size
-    type: int
 
 arguments:
   - valueFrom: $(inputs.inputfile)
@@ -27,8 +25,6 @@ arguments:
     prefix: -g
   - valueFrom: $(inputs.entity_type)
     prefix: -e
-  - valueFrom: $(inputs.size)
-    prefix: -n
   - valueFrom: results.json
     prefix: -r
 
