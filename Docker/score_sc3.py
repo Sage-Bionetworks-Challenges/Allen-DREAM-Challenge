@@ -28,7 +28,7 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
     rf = scores.T[0].loc['R-F_Cluster']
     triples = scores.T[0].loc['Triples']
     triples_score = 3*triples/(2*scipy.special.comb(n, 3, repetition=False))
-    rf_score = rf/n
+    rf_score = rf/(n - 3)
 
     score_dict['RF'] = rf_score
     score_dict['Triples'] = triples_score
