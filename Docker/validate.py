@@ -14,18 +14,21 @@ def valid_tree_size(tree, size):
     return len(tree.taxon_namespace) == size
 
 
-def valid_leaf_names(tree, gs_file):
+def valid_leaf_names(tree, gs_file, root_exists=False):
     """Check that prediction tree uses correct leaf labels."""
 
     gs_tree = dendropy.Tree.get(file=open(gs_file, 'r'),
                                 schema="newick",
                                 tree_offset=0)
 
-    valid_names = [t.label for t in gs_tree.taxon_namespace]
-    # Add root
-    valid_names.append("root")
-    return all([leaf.label in valid_names
-                for leaf in tree.taxon_namespace])
+    valid_names = set([t.label for t in gs_tree.taxon_namespace])
+    if root_exists:
+        valid_names.add('root')
+    submission_names = set([t.label for t in tree.taxon_namespace])
+    intersect = valid_names.intersection(submission_names)
+    all_exist = len(intersect) == len(valid_names)
+
+    return all_exist
 
 
 def main(submission, entity_type, goldstandard, size, results):
@@ -38,7 +41,7 @@ def main(submission, entity_type, goldstandard, size, results):
     """
 
     invalid_reasons = []
-
+    root_exists = False
     if submission is None:
         invalid_reasons = [
             f"Expected FileEntity type but found {entity_type}"]
@@ -47,8 +50,15 @@ def main(submission, entity_type, goldstandard, size, results):
             pred_tree = dendropy.Tree.get(file=open(submission, 'r'),
                                           schema="newick",
                                           tree_offset=0)
-            # find_root = pred_tree.find_node_with_taxon_label('root')
-            # pred_tree.reroot_at_node(find_root, update_bipartitions=False)
+            root_node_exists = pred_tree.find_node_with_label('root')
+            root_taxon_exists = pred_tree.find_node_with_taxon_label('root')
+            if not root_node_exists:
+                if root_taxon_exists:
+                    size = size + 1
+                    root_exists = True
+                else:
+                    raise ValueError("Must have 'root' in tree")
+                # pred_tree.reroot_at_node(find_root, update_bipartitions=False)
             # pred_tree.write(file=open('treefile.tre', 'r'), schema="newick")
         except Exception as err:
             invalid_reasons = [
@@ -58,7 +68,8 @@ def main(submission, entity_type, goldstandard, size, results):
                 invalid_reasons.append(
                     f"Prediction tree does not have {size:,} cell lines")
 
-            if not valid_leaf_names(pred_tree, goldstandard):
+            if not valid_leaf_names(pred_tree, goldstandard,
+                                    root_exists=root_exists):
                 invalid_reasons.append(
                     "Leaf names should be cell identifiers.")
 
