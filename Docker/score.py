@@ -26,7 +26,7 @@ def run_treecmp(path_reference_newick, path_input_newick, path_score_output,
     }
 
     cmd = ['java', '-jar', path_treecmp_jar,
-           '-P', '-N', '-I'
+           '-P', '-N', '-I',
            '-r', path_reference_newick,
            '-i', path_input_newick,
            '-o', path_score_output,
