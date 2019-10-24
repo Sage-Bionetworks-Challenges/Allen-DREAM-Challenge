@@ -94,8 +94,6 @@ if __name__ == "__main__":
                         required=True, help="Truth file")
     parser.add_argument("-e", "--entity_type",
                         required=True, help="Synapse entity type")
-    # parser.add_argument("-n", "--size", type=int,
-    #                     required=True, help="Size of tree")
     parser.add_argument("-r", "--results",
                         required=True, help="Results file")
 

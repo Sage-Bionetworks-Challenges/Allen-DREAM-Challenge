@@ -102,7 +102,6 @@ def main(submission, entity_type, goldstandard, results):
                                                         schema="newick")
                             errors = validate.validate_tree(pred_tree, gs_tree)
                             invalid_reasons.update(errors)
-
                     else:
                         invalid_reasons.add(
                             "Two tab-delimited columns are expected")
