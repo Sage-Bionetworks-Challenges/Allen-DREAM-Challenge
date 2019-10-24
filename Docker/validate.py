@@ -21,8 +21,9 @@ def valid_leaf_names(tree, gs_file):
                                 schema="newick",
                                 tree_offset=0)
 
-    valid_names = [
-        t.label for t in gs_tree.taxon_namespace]
+    valid_names = [t.label for t in gs_tree.taxon_namespace]
+    # Add root
+    valid_names.append("root")
     return all([leaf.label in valid_names
                 for leaf in tree.taxon_namespace])
 
@@ -46,6 +47,9 @@ def main(submission, entity_type, goldstandard, size, results):
             pred_tree = dendropy.Tree.get(file=open(submission, 'r'),
                                           schema="newick",
                                           tree_offset=0)
+            # find_root = pred_tree.find_node_with_taxon_label('root')
+            # pred_tree.reroot_at_node(find_root, update_bipartitions=False)
+            # pred_tree.write(file=open('treefile.tre', 'r'), schema="newick")
         except Exception as err:
             invalid_reasons = [
                 f"Prediction tree not a valid Newick tree format: {err}"]
