@@ -10,7 +10,6 @@ import dendropy
 
 def valid_leaf_names(tree, gs_tree):
     """Check that prediction tree uses correct leaf labels."""
-    # root_node_exists = tree.find_node_with_label('root')
     root_taxon_exists = tree.find_node_with_taxon_label('root')
 
     valid_names = set([t.label for t in gs_tree.taxon_namespace])
