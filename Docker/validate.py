@@ -8,26 +8,44 @@ import json
 import dendropy
 
 
-def valid_tree_size(tree, size):
-    """Check size of prediction tree."""
-
-    return len(tree.taxon_namespace) == size
-
-
-def valid_leaf_names(tree, gs_file):
+def valid_leaf_names(tree, gs_tree):
     """Check that prediction tree uses correct leaf labels."""
+    root_taxon_exists = tree.find_node_with_taxon_label('root')
 
-    gs_tree = dendropy.Tree.get(file=open(gs_file, 'r'),
-                                schema="newick",
-                                tree_offset=0)
+    valid_names = set([t.label for t in gs_tree.taxon_namespace])
+    if root_taxon_exists:
+        valid_names.add('root')
+    submission_names = set([t.label for t in tree.taxon_namespace])
+    intersect = valid_names.intersection(submission_names)
+    all_exist = len(intersect) == len(valid_names)
 
-    valid_names = [
-        t.label for t in gs_tree.taxon_namespace]
-    return all([leaf.label in valid_names
-                for leaf in tree.taxon_namespace])
+    return all_exist
 
 
-def main(submission, entity_type, goldstandard, size, results):
+def validate_tree(pred_tree, gs_tree):
+    """Validate submission tree
+
+    Args:
+        pred_tree: Submission tree
+        gs_tree: Goldstandard tree
+
+    Returns:
+        list of invalid reasons
+    """
+    invalid_errors = []
+    root_node_exists = pred_tree.find_node_with_label('root')
+    root_taxon_exists = pred_tree.find_node_with_taxon_label('root')
+    if not root_node_exists and not root_taxon_exists:
+        invalid_errors.append("Prediction tree must contain 'root' node")
+
+    if not valid_leaf_names(pred_tree, gs_tree):
+        invalid_errors.append("Prediction tree must contain all the cell "
+                              "identifiers, a 'root' node and must have "
+                              f"{len(gs_tree.taxon_namespace)} cell lines")
+    return invalid_errors
+
+
+def main(submission, entity_type, goldstandard, results):
     """Validate submission and write results to JSON.
 
     Args:
@@ -37,7 +55,10 @@ def main(submission, entity_type, goldstandard, size, results):
     """
 
     invalid_reasons = []
-
+    root_exists = False
+    gs_tree = dendropy.Tree.get(file=open(goldstandard, 'r'),
+                                schema="newick",
+                                tree_offset=0)
     if submission is None:
         invalid_reasons = [
             f"Expected FileEntity type but found {entity_type}"]
@@ -46,17 +67,14 @@ def main(submission, entity_type, goldstandard, size, results):
             pred_tree = dendropy.Tree.get(file=open(submission, 'r'),
                                           schema="newick",
                                           tree_offset=0)
+
+            # pred_tree.reroot_at_node(find_root, update_bipartitions=False)
+            # pred_tree.write(file=open('treefile.tre', 'r'), schema="newick")
         except Exception as err:
             invalid_reasons = [
                 f"Prediction tree not a valid Newick tree format: {err}"]
         else:
-            if not valid_tree_size(pred_tree, size):
-                invalid_reasons.append(
-                    f"Prediction tree does not have {size:,} cell lines")
-
-            if not valid_leaf_names(pred_tree, goldstandard):
-                invalid_reasons.append(
-                    "Leaf names should be cell identifiers.")
+            invalid_reasons.extend(validate_tree(pred_tree, gs_tree))
 
     prediction_file_status = "INVALID" if invalid_reasons else "VALIDATED"
 
@@ -76,11 +94,9 @@ if __name__ == "__main__":
                         required=True, help="Truth file")
     parser.add_argument("-e", "--entity_type",
                         required=True, help="Synapse entity type")
-    parser.add_argument("-n", "--size", type=int,
-                        required=True, help="Size of tree")
     parser.add_argument("-r", "--results",
                         required=True, help="Results file")
 
     args = parser.parse_args()
     main(args.submission_file, args.entity_type,
-         args.goldstandard, args.size, args.results)
+         args.goldstandard, args.results)

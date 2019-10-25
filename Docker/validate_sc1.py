@@ -7,6 +7,8 @@ import json
 
 import dendropy
 
+import validate
+
 
 def check_header(header):
     """Check that the header is two columns only: dreamID and nw."""
@@ -96,18 +98,10 @@ def main(submission, entity_type, goldstandard, results):
                             invalid_reasons.add(id_error)
                             invalid_reasons.add(tree_error)
                         else:
-                            try:
-                                gs_tree = dendropy.Tree.get(
-                                    data=gs_data[tree_id], schema="newick")
-                                valid_names = [
-                                    t.label for t in gs_tree.taxon_namespace]
-                                taxons = all(
-                                    [t.label in valid_names
-                                     for t in pred_tree.taxon_namespace])
-                                assert taxons
-                            except AssertionError:
-                                invalid_reasons.add(
-                                    "Leaf names should be barcodes, e.g. 1_2012210001")
+                            gs_tree = dendropy.Tree.get(data=gs_data[tree_id],
+                                                        schema="newick")
+                            errors = validate.validate_tree(pred_tree, gs_tree)
+                            invalid_reasons.update(errors)
                     else:
                         invalid_reasons.add(
                             "Two tab-delimited columns are expected")
