@@ -62,7 +62,7 @@ def reroot_submission(submissionfile):
     root_taxon = pred_tree.find_node_with_taxon_label('root')
     if root_taxon:
         pred_tree.reroot_at_node(root_taxon, update_bipartitions=False)
-        output = submissionfile + ".new"
+        output = "rerooted.new"
         with open(output, "w") as rerooted_tree:
             pred_tree.write(file=rerooted_tree, schema="newick")
         return output
