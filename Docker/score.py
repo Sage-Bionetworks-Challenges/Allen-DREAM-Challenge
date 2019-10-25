@@ -66,7 +66,7 @@ def reroot_submission(submissionfile):
         with open(output, "w") as rerooted_tree:
             pred_tree.write(file=rerooted_tree, schema="newick")
         return output
-    return pred_tree
+    return submissionfile
 
 
 def main(submissionfile, goldstandard, results, path_to_treecmp, run_num=1):
