@@ -34,7 +34,9 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
         rooted_submission_path = score.reroot_submission("sub.nwk")
         scores = score.get_scores("truth.nwk", rooted_submission_path,
                                   "treecmp_results.out", path_to_treecmp)
-
+        print(row['dreamID'],
+              scores.T[0].loc['R-F_Cluster_toYuleAvg'],
+              scores.T[0].loc['Triples_toYuleAvg'])
         rf_scores.append(scores.T[0].loc['R-F_Cluster_toYuleAvg'])
         triple_scores.append(min(1, scores.T[0].loc['Triples_toYuleAvg']))
 
