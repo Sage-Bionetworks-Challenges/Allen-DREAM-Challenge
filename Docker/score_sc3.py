@@ -31,7 +31,7 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
     rf_score = rf/(n - 3)
 
     score_dict['RF'] = rf_score
-    score_dict['Triples'] = triples_score
+    score_dict['Triples'] = min(1, triples_score)
     score_dict['prediction_file_status'] = prediction_file_status
     with open(results, 'w') as output:
         output.write(json.dumps(score_dict))

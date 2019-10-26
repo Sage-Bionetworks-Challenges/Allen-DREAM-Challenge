@@ -36,7 +36,7 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
                                   "treecmp_results.out", path_to_treecmp)
 
         rf_scores.append(scores.T[0].loc['R-F_Cluster_toYuleAvg'])
-        triple_scores.append(scores.T[0].loc['Triples_toYuleAvg'])
+        triple_scores.append(min(1, scores.T[0].loc['Triples_toYuleAvg']))
 
     score_dict['RF_average'] = sum(rf_scores) / len(rf_scores)
     score_dict['Triples_average'] = sum(triple_scores) / len(triple_scores)
