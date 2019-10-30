@@ -26,6 +26,7 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
 
     rf_scores = []
     triple_scores = []
+    scores_per_tree = []
     for _, row in mergeddf.iterrows():
         with open("truth.nwk", 'w') as truth:
             truth.write(row['ground'])
@@ -34,15 +35,18 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
         rooted_submission_path = score.reroot_submission("sub.nwk")
         scores = score.get_scores("truth.nwk", rooted_submission_path,
                                   "treecmp_results.out", path_to_treecmp)
-        print(row['dreamID'],
-              scores.T[0].loc['R-F_Cluster_toYuleAvg'],
-              scores.T[0].loc['Triples_toYuleAvg'])
+        tree_scores = [str(x) for x in (row['dreamID'],
+                                        scores.T[0].loc['R-F_Cluster_toYuleAvg'],
+                                        scores.T[0].loc['Triples_toYuleAvg'])]
+        scores_per_tree.append("\t".join(tree_scores))
         rf_scores.append(scores.T[0].loc['R-F_Cluster_toYuleAvg'])
         triple_scores.append(min(1, scores.T[0].loc['Triples_toYuleAvg']))
 
     score_dict['RF_average'] = sum(rf_scores) / len(rf_scores)
     score_dict['Triples_average'] = sum(triple_scores) / len(triple_scores)
     score_dict['prediction_file_status'] = prediction_file_status
+    print("id\tRF\ttriplet")
+    print("\n".join(scores_per_tree))
     with open(results, 'w') as o:
         o.write(json.dumps(score_dict))
 
