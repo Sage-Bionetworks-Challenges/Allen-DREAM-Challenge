@@ -10,16 +10,21 @@ import dendropy
 
 def valid_leaf_names(tree, gs_tree):
     """Check that prediction tree uses correct leaf labels."""
+
+    valid = False
+    valid_names = [t.label for t in gs_tree.taxon_namespace]
+    unique_names = set(valid_names)
+
     root_taxon_exists = tree.find_node_with_taxon_label('root')
-
-    valid_names = set([t.label for t in gs_tree.taxon_namespace])
     if root_taxon_exists:
-        valid_names.add('root')
-    submission_names = set([t.label for t in tree.taxon_namespace])
-    intersect = valid_names.intersection(submission_names)
-    all_exist = len(intersect) == len(valid_names)
+        unique_names.add('root')
 
-    return all_exist
+    if len(valid_names) == len(unique_names):
+        submission_names = set([t.label for t in tree.taxon_namespace])
+        intersect = unique_names.intersection(submission_names)
+        valid = len(intersect) == len(unique_names)
+
+    return valid
 
 
 def validate_tree(pred_tree, gs_tree):
@@ -39,9 +44,9 @@ def validate_tree(pred_tree, gs_tree):
         invalid_errors.append("Prediction tree must contain 'root' node")
 
     if not valid_leaf_names(pred_tree, gs_tree):
-        invalid_errors.append("Prediction tree must contain all the cell "
-                              "identifiers, a 'root' node and must have "
-                              f"{len(gs_tree.taxon_namespace)} cell lines")
+        invalid_errors.append("Prediction tree must have a single 'root' node, "
+                              f"use the correct identifier names, and contain "
+                              f"{len(gs_tree.taxon_namespace):,} cell lines.")
     return invalid_errors
 
 
@@ -55,7 +60,6 @@ def main(submission, entity_type, goldstandard, results):
     """
 
     invalid_reasons = []
-    root_exists = False
     gs_tree = dendropy.Tree.get(file=open(goldstandard, 'r'),
                                 schema="newick",
                                 tree_offset=0)
