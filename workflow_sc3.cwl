@@ -70,7 +70,7 @@ steps:
       - id: invalid_reasons
   
   validation_email:
-    run: run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v2.0/validate_email.cwl
+    run: https://raw.githubusercontent.com/Sage-Bionetworks/ChallengeWorkflowTemplates/v2.0/validate_email.cwl
     in:
       - id: submissionid
         source: "#submissionId"
