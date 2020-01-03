@@ -94,21 +94,24 @@ def main(submission, entity_type, goldstandard, results):
                         id_error, tree_id = check_id(columns[0])
                         tree_error, pred_tree = check_tree(columns[1])
 
-                        if id_error or tree_error:
-                            invalid_reasons.add(id_error)
-                            invalid_reasons.add(tree_error)
+                        format_error = "".join([id_error, tree_error])
+                        if format_error:
+                            invalid_reasons.add(
+                                f"dreamId {tree_id:02d}: " + format_error)
                         else:
                             gs_tree = dendropy.Tree.get(data=gs_data[tree_id],
                                                         schema="newick")
                             errors = validate.validate_tree(pred_tree, gs_tree)
-                            invalid_reasons.update(errors)
+                            if errors:
+                                invalid_reasons.add(
+                                    f"dreamId {tree_id:02d}: " + errors[0])
                     else:
                         invalid_reasons.add(
                             "Two tab-delimited columns are expected")
 
     prediction_file_status = "INVALID" if invalid_reasons else "VALIDATED"
 
-    result_dict = {'prediction_file_errors': "\n".join(invalid_reasons)[:500],
+    result_dict = {'prediction_file_errors': "\n".join(sorted(invalid_reasons))[:500],
                    'prediction_file_status': prediction_file_status,
                    'round': 1}
 
