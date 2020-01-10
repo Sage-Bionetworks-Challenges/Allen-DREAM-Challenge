@@ -12,7 +12,7 @@ hints:
 
 inputs:
   - id: inputfile
-    type: File
+    type: File?
   - id: goldstandard
     type: File
   - id: entity_type
