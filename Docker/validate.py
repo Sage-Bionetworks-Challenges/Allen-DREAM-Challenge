@@ -90,7 +90,7 @@ def main(submission, entity_type, goldstandard, results):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--submission_file",
-                        required=True, help="Submission file")
+                        help="Submission file")
     parser.add_argument("-g", "--goldstandard",
                         required=True, help="Truth file")
     parser.add_argument("-e", "--entity_type",
@@ -99,5 +99,14 @@ if __name__ == "__main__":
                         required=True, help="Results file")
 
     args = parser.parse_args()
-    main(args.submission_file, args.entity_type,
-         args.goldstandard, args.results)
+    if not args.submission_file:
+        with open(args.results, 'w') as out:
+            out.write(json.dumps(
+                {'prediction_file_errors':
+                    "Submission must be a Synapse File, not Folder/Project",
+                 'prediction_file_status': "INVALID",
+                 'round': 1}
+            ))
+    else:
+        main(args.submission_file, args.entity_type,
+             args.goldstandard, args.results)
