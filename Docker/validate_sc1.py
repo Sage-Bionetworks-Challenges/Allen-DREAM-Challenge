@@ -90,7 +90,7 @@ def main(submission, entity_type, goldstandard, results):
 
                     columns = row.rstrip("\r\n").split("\t")
 
-                    if len(columns) > 1:
+                    if len(columns) == 2:
                         id_error, tree_id = check_id(columns[0])
                         tree_error, pred_tree = check_tree(columns[1])
 
@@ -107,7 +107,8 @@ def main(submission, entity_type, goldstandard, results):
                                     f"dreamId {tree_id:02d}: " + errors[0])
                     else:
                         invalid_reasons.add(
-                            "Two tab-delimited columns are expected")
+                            f"dreamId {columns[0]}: there should be two columns in this row" +
+                            f" ({len(columns)} columns found)")
 
     prediction_file_status = "INVALID" if invalid_reasons else "VALIDATED"
 
@@ -135,7 +136,7 @@ if __name__ == "__main__":
         with open(args.results, 'w') as out:
             out.write(json.dumps(
                 {'prediction_file_errors':
-                    "Submission must be a Synapse File, not Folder/Project",
+                 "Submission must be a Synapse File, not Folder/Project",
                  'prediction_file_status': "INVALID",
                  'round': 1}
             ))

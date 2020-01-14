@@ -26,7 +26,7 @@ def run_treecmp(path_reference_newick, path_input_newick, path_score_output,
         "unrooted": "ms rf pd qt um"
     }
 
-    cmd = ['java', '-jar', path_treecmp_jar,
+    cmd = ['java', '-Xmx8g', '-jar', path_treecmp_jar,
            '-P', '-N', '-I',
            '-r', path_reference_newick,
            '-i', path_input_newick,
