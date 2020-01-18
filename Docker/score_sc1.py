@@ -32,7 +32,7 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
             truth.write(row['ground'])
         with open("sub.nwk", 'w') as sub:
             sub.write(row['nw'])
-        rooted_submission_path = score.reroot_submission("sub.nwk")
+        rooted_submission_path = score.reroot_and_remap_submission("sub.nwk")
         scores = score.get_scores("truth.nwk", rooted_submission_path,
                                   "treecmp_results.out", path_to_treecmp)
         tree_scores = [str(x) for x in (row['dreamID'],

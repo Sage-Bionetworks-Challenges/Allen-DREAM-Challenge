@@ -59,19 +59,21 @@ def get_scores(path_truth_newick, path_submission_newick, path_score_output,
     return df_metrics
 
 
-def reroot_submission(submissionfile):
-    """If 'root' node is in the middle, must reroot the tree"""
+def reroot_and_remap_submission(submissionfile):
+    """Reroot tree if applicable, and remap nodes if non-binary tree."""
     pred_tree = dendropy.Tree.get(file=open(submissionfile, 'r'),
                                   schema="newick",
                                   tree_offset=0)
+    pred_tree.suppress_unifurcations()
     root_taxon = pred_tree.find_node_with_taxon_label('root')
+
+    # If 'root' node is in the middle, must reroot the tree.
     if root_taxon:
         pred_tree.reroot_at_node(root_taxon, update_bipartitions=False)
-        output = "rerooted.new"
-        with open(output, "w") as rerooted_tree:
-            pred_tree.write(file=rerooted_tree, schema="newick")
-        return output
-    return submissionfile
+    output = "rerooted.new"
+    with open(output, "w") as rerooted_tree:
+        pred_tree.write(file=rerooted_tree, schema="newick")
+    return output
 
 
 def main(submissionfile, goldstandard, results, path_to_treecmp, run_num=1):
@@ -87,7 +89,7 @@ def main(submissionfile, goldstandard, results, path_to_treecmp, run_num=1):
     prediction_file_status = "SCORED"
     rf_scores = []
     triple_scores = []
-    rooted_submission_path = reroot_submission(submissionfile)
+    rooted_submission_path = reroot_and_remap_submission(submissionfile)
     for _ in range(run_num):
         scores = get_scores(goldstandard, rooted_submission_path,
                             "treecmp_results.out",
