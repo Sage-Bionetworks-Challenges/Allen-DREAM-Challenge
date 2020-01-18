@@ -4,7 +4,6 @@
 
 import argparse
 import json
-from pprint import pprint
 
 import dendropy
 
