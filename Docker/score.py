@@ -27,10 +27,8 @@ def run_treecmp(path_reference_newick, path_input_newick, path_score_output,
     }
 
     # Calculating larger trees require more memory, so increase heap space
-    # (RAM) to 1G.
-    # FIXME: JVM still not working as part of the workflow... will need to
-    #        revisit.
-    cmd = ['java', '-Xmx1G', '-Xms1G',
+    # (alotted RAM for JVM) to 2G.
+    cmd = ['java', '-Xmx2G',
            '-jar', path_treecmp_jar,
            '-P', '-N', '-I',
            '-r', path_reference_newick,
