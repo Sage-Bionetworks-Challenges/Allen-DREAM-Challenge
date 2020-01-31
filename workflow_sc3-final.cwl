@@ -130,6 +130,8 @@ steps:
         source: "#synapseConfig"
       - id: results
         source: "#scoring/results"
+      - id: private_annotations
+        default: [RF, Triples]
     out: []
 
   annotate_submission_with_output:
