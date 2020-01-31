@@ -30,7 +30,7 @@ def main(submissionfile, goldstandard, results, path_to_treecmp):
     triples_score = 3*triples/(2*scipy.special.comb(n, 3, repetition=False))
     rf_score = rf/(n - 3)
 
-    score_dict['RF'] = rf_score
+    score_dict['RF'] = min(1, rf_score)
     score_dict['Triples'] = min(1, triples_score)
     score_dict['prediction_file_status'] = prediction_file_status
     with open(results, 'w') as output:

@@ -92,7 +92,7 @@ def main(submissionfile, goldstandard, results, path_to_treecmp, run_num=1):
         scores = get_scores(goldstandard, rooted_submission_path,
                             "treecmp_results.out",
                             path_to_treecmp)
-        rf_scores.append(scores.T[0].loc['R-F_Cluster_toYuleAvg'])
+        rf_scores.append(min(1, scores.T[0].loc['R-F_Cluster_toYuleAvg']))
         triple_scores.append(min(1, scores.T[0].loc['Triples_toYuleAvg']))
 
     score_dict['RF'] = sum(rf_scores)/len(rf_scores)
