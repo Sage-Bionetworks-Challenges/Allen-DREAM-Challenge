@@ -42,7 +42,7 @@ where:
 * `inputfile` - filepath to the prediction file
 * `goldstandard` - filepath to the SC1 ground truth file (available in `groundtruth_files/`)
 
-### Example
+##### Example
 
 ```bash
 cwltool score_sc1.cwl --inputfile sample_predictions/sc1.txt \
@@ -72,7 +72,7 @@ where:
 * `goldstandard` - filepath to the SC2 ground truth file (available in `groundtruth_files/`)
 * `runnum` - number of runs/iterations
 
-### Example
+##### Example
 
 ```bash
 cwltool score_treecmp.cwl --inputfile sample_predictions/sc2.nw \
@@ -101,7 +101,7 @@ where:
 * `inputfile` - filepath to the prediction file
 * `goldstandard` - filepath to the SC3 ground truth file (available in `groundtruth_files/`)
 
-### Example
+##### Example
 
 ```bash
 cwltool score_sc3.cwl --inputfile sample_predictions/sc3.txt \
