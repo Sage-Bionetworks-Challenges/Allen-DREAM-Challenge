@@ -8,7 +8,7 @@ baseCommand: validate_sc1.py
 
 hints:
   DockerRequirement:
-    dockerPull: docker.synapse.org/syn20692756/scoring_harness:v3
+    dockerPull: sagebionetworks/allen-dream-challenge-scoring:v1
 
 inputs:
   - id: inputfile
