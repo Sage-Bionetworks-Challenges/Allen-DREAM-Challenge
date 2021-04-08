@@ -63,9 +63,9 @@ This will output the following scores into an outfile file called `results.json`
 To score a prediction file for SC2, run the following command:
 
 ```bash
-cwltool score_sc1.cwl --inputfile /path/to/file.nw \
-                      --goldstandard /path/to/file.nw \
-                      --runnum 
+cwltool score_treecmp.cwl --inputfile /path/to/file.nw \
+                          --goldstandard /path/to/file.nw \
+                          --runnum 1
 ```
 where:
 * `inputfile` - filepath to the prediction file
